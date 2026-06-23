@@ -15,6 +15,7 @@
             --green: #25d656;
             --dark-gray: #303030;
             --light-blue: #88c0d0;
+            --red-alert: #bf4040;
         }
 
         body, html {
@@ -68,7 +69,7 @@
             display: flex;
             flex-direction: column;
             gap: 8px;
-            z-index: 50;
+            z-index: 1000; /* Always on top */
         }
         .nav-item {
             background-color: var(--dark-gray);
@@ -90,10 +91,25 @@
             color: #222;
             font-weight: bold;
         }
-        .nav-item.small {
-            font-size: 10px;
-            padding: 5px 20px 5px 15px;
-            color: #888;
+        .nav-item.active::after {
+            content: " *";
+        }
+
+        /* --- View Containers --- */
+        .view {
+            width: 100vw;
+            height: 100vh;
+            position: absolute;
+            top: 0;
+            left: 0;
+            pointer-events: none; /* Let clicks pass through empty space */
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            display: none;
+        }
+        .view.active {
+            opacity: 1;
+            display: block;
         }
 
         /* --- Draggable Nodes (Blobs & Windows) --- */
@@ -104,8 +120,10 @@
             flex-direction: column;
             align-items: center;
             transition: transform 0.1s;
+            pointer-events: auto; /* Re-enable clicks on nodes */
         }
         .node:active { cursor: grabbing; transform: scale(0.98); }
+        .node[data-link]:hover { filter: brightness(1.1); }
 
         .blob-mask {
             width: 15vw;
@@ -144,15 +162,20 @@
             font-size: 0.65rem;
             color: #a8967d;
             text-transform: lowercase;
+            max-width: 160px;
         }
 
-        /* --- OS Window (WHO.TXT) --- */
+        /* --- OS Windows --- */
         .os-window {
             background-color: #3f3d38;
             border: 2px solid #222;
             width: 220px;
             box-shadow: 15px 15px 20px rgba(0,0,0,0.3);
             transform: rotate(2deg);
+        }
+        .os-window.wide {
+            width: 380px;
+            transform: rotate(-1deg);
         }
         .window-header {
             background-color: var(--orange);
@@ -166,10 +189,14 @@
             color: #111;
             font-weight: bold;
         }
+        .window-header.alt { background-color: var(--light-blue); }
+        .window-header.error { background-color: var(--red-alert); color: #fff; }
+
         .window-header button {
             background: none; border: 1px solid #111; 
             width: 14px; height: 14px; line-height: 10px;
             cursor: pointer; font-size: 10px; padding:0;
+            color: inherit;
         }
         .window-body {
             padding: 15px;
@@ -177,20 +204,38 @@
             flex-direction: column;
             align-items: center;
         }
+        .window-body.text-left {
+            align-items: flex-start;
+        }
         .window-img {
             width: 100%;
             height: 140px;
             object-fit: cover;
             border: 1px solid #222;
             margin-bottom: 15px;
-            filter: contrast(1.2) saturate(1.5); /* Make it pop */
+            filter: contrast(1.2) saturate(1.5);
         }
+        
+        .typewriter-text {
+            color: #e3d8c8;
+            font-family: 'Courier Prime', monospace;
+            font-size: 12px;
+            line-height: 1.5;
+            margin-bottom: 10px;
+        }
+        .typewriter-text .highlight {
+            color: var(--light-blue);
+        }
+        .typewriter-text .accent {
+            color: var(--orange);
+        }
+
         .window-number {
             color: #fff;
             font-family: 'Courier Prime', monospace;
             margin-bottom: 10px;
         }
-        .follow-btn {
+        .action-btn {
             background-color: var(--light-blue);
             border: 1px solid #222;
             padding: 4px 15px;
@@ -198,10 +243,11 @@
             font-size: 12px;
             cursor: pointer;
             box-shadow: 2px 2px 0 #222;
+            color: #222;
         }
-        .follow-btn:active { box-shadow: 0 0 0 #222; transform: translate(2px, 2px); }
+        .action-btn:active { box-shadow: 0 0 0 #222; transform: translate(2px, 2px); }
 
-        /* --- Connection Tags --- */
+        /* --- Connection Tags & Links --- */
         .tag {
             position: absolute;
             background-color: #44433e;
@@ -212,22 +258,43 @@
             box-shadow: 3px 3px 5px rgba(0,0,0,0.3);
             cursor: grab;
             z-index: 15;
+            border: 1px solid transparent;
+        }
+        .tag[data-link] {
+            cursor: pointer;
+            border: 1px solid #666;
+            transition: color 0.2s, background-color 0.2s;
+        }
+        .tag[data-link]:hover {
+            color: #222;
+            background-color: var(--light-blue);
+            border-color: #222;
         }
 
-        /* Specific Positions matching the image */
+        /* --- Layout: Music View --- */
         #node-zamagetsi { top: 20%; left: 20%; }
-        #node-play      { top: 45%; left: 35%; z-index: 20; transform: scale(1.1); }
         #node-lamenting { top: 25%; left: 52%; }
         #node-funzel    { top: 65%; left: 22%; }
         #node-rain      { top: 70%; left: 50%; }
         #window-who     { top: 15%; left: 70%; z-index: 30; }
-        
-        #tag-1 { top: 28%; left: 63%; transform: rotate(-3deg); }
-        #tag-2 { top: 32%; left: 62%; transform: rotate(2deg); }
+        #tag-1          { top: 28%; left: 63%; transform: rotate(-3deg); }
+        #tag-2          { top: 32%; left: 62%; transform: rotate(2deg); }
+
+        /* --- Layout: Transmission View --- */
+        #window-about   { top: 25%; left: 25%; z-index: 20; }
+        #node-rec-1     { top: 15%; left: 65%; transform: scale(0.9); }
+        #node-rec-2     { top: 55%; left: 60%; transform: scale(0.95); }
+        #tag-ig         { top: 75%; left: 30%; transform: rotate(-5deg); z-index: 25;}
+        #tag-bc         { top: 78%; left: 38%; transform: rotate(2deg); z-index: 25;}
+        #tag-sc         { top: 72%; left: 45%; transform: rotate(-1deg); z-index: 25;}
+
+        /* --- Layout: Kits View --- */
+        #window-kits    { top: 35%; left: 40%; z-index: 30; }
 
         /* Image filters for moody aesthetic */
         .sepia-filter { filter: sepia(0.8) contrast(1.1) brightness(0.8) opacity(0.9); }
         .dark-filter  { filter: grayscale(0.5) contrast(1.2) brightness(0.6) sepia(0.3); }
+        .blue-filter  { filter: grayscale(0.5) contrast(1.2) sepia(1) hue-rotate(180deg) brightness(0.8); }
 
     </style>
 </head>
@@ -245,106 +312,205 @@
 
     <!-- Sidebar Nav -->
     <nav class="sidebar">
-        <a class="nav-item active">music *</a>
-        <a class="nav-item">kits</a>
-        <a class="nav-item">transmission</a>
+        <a class="nav-item active" data-target="view-music">music</a>
+        <a class="nav-item" data-target="view-kits">kits</a>
+        <a class="nav-item" data-target="view-transmission">transmission</a>
     </nav>
 
-    <!-- Node: Zamagetsi -->
-    <div class="node" id="node-zamagetsi">
-        <!-- Using a cubist/abstract placeholder image -->
-        <div class="blob-mask shape-1" style="background-image: url('https://f4.bcbits.com/img/a4049055726_10.jpg?q=80&w=400&auto=format&fit=crop'); filter: sepia(0.3) saturate(1.5);"></div>
-        <div class="node-info">
-            <div class="node-title">Zamagetsi</div>
-            <div class="node-desc">2026 · 12 fractured movements</div>
+    <!-- ============================================== -->
+    <!-- VIEW: MUSIC                                    -->
+    <!-- ============================================== -->
+    <div id="view-music" class="view active">
+        <!-- Node: Zamagetsi -->
+        <div class="node" id="node-zamagetsi" data-link="https://bandcamp.com" title="Click to listen">
+            <div class="blob-mask shape-1" style="background-image: url('https://f4.bcbits.com/img/a4049055726_10.jpg?q=80&w=400&auto=format&fit=crop'); filter: sepia(0.3) saturate(1.5);"></div>
+            <div class="node-info">
+                <div class="node-title">Zamagetsi</div>
+                <div class="node-desc">2026 · 12 fractured movements</div>
+            </div>
+        </div>
+
+        <!-- Node: Funzel -->
+        <div class="node" id="node-funzel" data-link="https://bandcamp.com" title="Click to listen">
+            <div class="blob-mask shape-2 dark-filter" style="background-image: url('https://f4.bcbits.com/img/a0157294812_10.jpg?q=80&w=400&auto=format&fit=crop');"></div>
+            <div class="node-info">
+                <div class="node-title">Funzel</div>
+                <div class="node-desc">2023 · ambient drown tape</div>
+            </div>
+        </div>
+
+        <!-- Node: Lamenting -->
+        <div class="node" id="node-lamenting" data-link="https://bandcamp.com" title="Click to listen">
+            <div class="blob-mask shape-4 sepia-filter" style="background-image: url('https://f4.bcbits.com/img/a1403167335_10.jpg?q=80&w=400&auto=format&fit=crop');"></div>
+            <div class="node-info">
+                <div class="node-title">Lamenting</div>
+                <div class="node-desc">2024 · single / 4:41</div>
+            </div>
+        </div>
+
+        <!-- Node: Rain -->
+        <div class="node" id="node-rain" data-link="https://bandcamp.com" title="Click to listen">
+            <div class="blob-mask shape-1 sepia-filter" style="background-image: url('https://f4.bcbits.com/img/a3860398966_10.jpg?q=80&w=400&auto=format&fit=crop'); transform: scale(0.9);"></div>
+            <div class="node-info">
+                <div class="node-title">Rain</div>
+                <div class="node-desc">2023 · the wet one</div>
+            </div>
+        </div>
+
+        <!-- Floating Tags -->
+        <div class="node tag" id="tag-1" data-link="https://instagram.com" title="Instagram">@musicof01</div>
+        <div class="node tag" id="tag-2" data-link="https://twitter.com" title="Twitter">@themusicof01</div>
+
+        <!-- OS Window Node -->
+        <div class="node os-window" id="window-who">
+            <div class="window-header">
+                <span>WHO.TXT</span>
+                <button>x</button>
+            </div>
+            <div class="window-body">
+                <img class="window-img" src="https://f4.bcbits.com/img/0043370439_20.jpg?q=80&w=400&auto=format&fit=crop" alt="trippy mind">
+                <div class="window-number">01</div>
+                <button class="action-btn">following ♡</button>
+            </div>
         </div>
     </div>
 
-    <!-- Node: Funzel -->
-    <div class="node" id="node-funzel">
-        <!-- Dark, moody forest placeholder -->
-        <div class="blob-mask shape-2 dark-filter" style="background-image: url('https://f4.bcbits.com/img/a0157294812_10.jpg?q=80&w=400&auto=format&fit=crop');"></div>
-        <div class="node-info">
-            <div class="node-title">Funzel</div>
-            <div class="node-desc">2023 · ambient drown tape</div>
+    <!-- ============================================== -->
+    <!-- VIEW: TRANSMISSION                             -->
+    <!-- ============================================== -->
+    <div id="view-transmission" class="view">
+        
+        <!-- About Me Window -->
+        <div class="node os-window wide" id="window-about">
+            <div class="window-header alt">
+                <span>TRANSMISSION_LOG.SYS</span>
+                <button>_</button>
+            </div>
+            <div class="window-body text-left">
+                <div class="typewriter-text">
+                    <p>Subject <span class="highlight">01</span> initialized.</p>
+                    <p>Broadcasting from the void between analog degradation and digital clarity. I create soundscapes for abandoned futures and forgotten pasts.</p>
+                    <p>Current configuration: <span class="accent">hardware synthesis, modified tape, algorithmic decay.</span></p>
+                    <p>Transmission origin unknown. Signal repeating.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recommendation 1 -->
+        <div class="node" id="node-rec-1" data-link="https://aphextwin.warp.net/" title="Click to open external link">
+            <div class="blob-mask shape-3 blue-filter" style="background-image: url('https://f4.bcbits.com/img/a0846665780_10.jpg');"></div>
+            <div class="node-info">
+                <div class="node-title">SAW 85-92</div>
+                <div class="node-desc">Aphex Twin · essential catalog</div>
+            </div>
+        </div>
+
+        <!-- Recommendation 2 -->
+        <div class="node" id="node-rec-2" data-link="https://boardsofcanada.bandcamp.com/" title="Click to open external link">
+            <div class="blob-mask shape-5 sepia-filter" style="background-image: url('https://f4.bcbits.com/img/a0149021272_10.jpg');"></div>
+            <div class="node-info">
+                <div class="node-title">Geogaddi</div>
+                <div class="node-desc">Boards of Canada · math & magic</div>
+            </div>
+        </div>
+
+        <!-- Social Links (Draggable but also clickable) -->
+        <div class="node tag" id="tag-ig" data-link="https://instagram.com">↗ instagram</div>
+        <div class="node tag" id="tag-bc" data-link="https://bandcamp.com">↗ bandcamp</div>
+        <div class="node tag" id="tag-sc" data-link="https://soundcloud.com">↗ soundcloud</div>
+    </div>
+
+    <!-- ============================================== -->
+    <!-- VIEW: KITS                                     -->
+    <!-- ============================================== -->
+    <div id="view-kits" class="view">
+        <!-- Kits Window -->
+        <div class="node os-window" id="window-kits">
+            <div class="window-header error">
+                <span>KITS_DB.EXE</span>
+                <button>x</button>
+            </div>
+            <div class="window-body text-left">
+                <div class="typewriter-text" style="color: #a89f91;">
+                    <p>> scanning root dir...</p>
+                    <p>> 0 files found.</p>
+                    <br>
+                    <p style="color: var(--red-alert);">ERROR 404:</p>
+                    <p style="font-weight: bold; color: #fff;">MODULES_COMING_SOON</p>
+                    <br>
+                    <p>> awaiting future cycle for drum breaks & textures.</p>
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- Node: Lamenting -->
-    <div class="node" id="node-lamenting">
-        <!-- Statue placeholder -->
-        <div class="blob-mask shape-4 sepia-filter" style="background-image: url('https://f4.bcbits.com/img/a1403167335_10.jpg?q=80&w=400&auto=format&fit=crop');"></div>
-        <div class="node-info">
-            <div class="node-title">Lamenting</div>
-            <div class="node-desc">2024 · single / 4:41</div>
-        </div>
-    </div>
-
-    <!-- Node: Rain -->
-    <div class="node" id="node-rain">
-        <!-- Statue/water placeholder -->
-        <div class="blob-mask shape-1 sepia-filter" style="background-image: url('https://f4.bcbits.com/img/a3860398966_10.jpg?q=80&w=400&auto=format&fit=crop'); transform: scale(0.9);"></div>
-        <div class="node-info">
-            <div class="node-title">Rain</div>
-            <div class="node-desc">2023 · the wet one</div>
-        </div>
-    </div>
-
-    <!-- Floating Tags -->
-    <div class="node tag" id="tag-1">@musicof01</div>
-    <div class="node tag" id="tag-2">@themusicof01</div>
-
-    <!-- OS Window Node -->
-    <div class="node os-window" id="window-who">
-        <div class="window-header">
-            <span>WHO.TXT</span>
-        </div>
-        <div class="window-body">
-            <!-- Trippy/neon placeholder image -->
-            <img class="window-img" src="https://f4.bcbits.com/img/0043370439_20.jpg?q=80&w=400&auto=format&fit=crop" alt="trippy mind">
-            <div class="window-number">01</div>
-            <button class="follow-btn">following ♡</button>
-        </div>
-    </div>
 
     <script>
-        // Extremely simple drag-and-drop script to make it "weird" and interactive 
-        // without breaking the static site paradigm.
+        // --- Navigation Logic ---
+        const navItems = document.querySelectorAll('.nav-item');
+        const views = document.querySelectorAll('.view');
+
+        navItems.forEach(item => {
+            item.addEventListener('click', (e) => {
+                // Update active state on nav
+                navItems.forEach(nav => nav.classList.remove('active'));
+                e.target.classList.add('active');
+
+                // Switch views
+                const targetId = e.target.getAttribute('data-target');
+                views.forEach(view => {
+                    if(view.id === targetId) {
+                        view.classList.add('active');
+                        // Quick animation reset
+                        view.style.opacity = '0';
+                        setTimeout(() => view.style.opacity = '1', 10);
+                    } else {
+                        view.classList.remove('active');
+                    }
+                });
+            });
+        });
+
+        // --- Drag & Drop Logic ---
         const nodes = document.querySelectorAll('.node');
         let highestZIndex = 100;
 
         nodes.forEach(node => {
             let isDragging = false;
+            let hasMoved = false;
             let startX, startY, initialLeft, initialTop;
 
             node.addEventListener('mousedown', (e) => {
-                // Ignore button clicks inside windows
+                // Ignore clicks on standard action buttons inside windows
                 if(e.target.tagName.toLowerCase() === 'button') return;
+                
+                // Only allow dragging with left click
+                if (e.button !== 0) return;
 
                 isDragging = true;
+                hasMoved = false;
                 
-                // Bring to front
+                // Bring to front globally
                 highestZIndex++;
                 node.style.zIndex = highestZIndex;
 
                 startX = e.clientX;
                 startY = e.clientY;
                 
-                // Get computed styles to handle percentage-to-pixel conversion seamlessly during drag
                 const rect = node.getBoundingClientRect();
                 const parentRect = node.parentElement.getBoundingClientRect();
                 
                 initialLeft = rect.left - parentRect.left;
                 initialTop = rect.top - parentRect.top;
 
-                // Temporarily switch from percentages to pixels for smooth dragging
                 node.style.left = `${initialLeft}px`;
                 node.style.top = `${initialTop}px`;
-                node.style.transform = 'none'; // reset transform to avoid drag jitter
+                node.style.transform = 'none'; 
             });
 
             document.addEventListener('mousemove', (e) => {
                 if (!isDragging) return;
+                hasMoved = true;
 
                 const dx = e.clientX - startX;
                 const dy = e.clientY - startY;
@@ -353,11 +519,15 @@
                 node.style.top = `${initialTop + dy}px`;
             });
 
-            document.addEventListener('mouseup', () => {
+            document.addEventListener('mouseup', (e) => {
                 if(isDragging) {
                     isDragging = false;
-                    // Optional: You could convert pixels back to percentages here 
-                    // if you want resize stability, but leaving it as px works for a session.
+                    
+                    // If the node wasn't moved, treat it as a click.
+                    // If it has a data-link attribute, navigate to it.
+                    if (!hasMoved && node.hasAttribute('data-link')) {
+                        window.open(node.getAttribute('data-link'), '_blank');
+                    }
                 }
             });
         });
