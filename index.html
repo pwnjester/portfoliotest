@@ -53,7 +53,7 @@
             z-index: 10;
         }
         .curved-text-container text {
-            fill: #fff;
+            fill: #222;
             font-size: 20px;
             font-style: italic;
             letter-spacing: 1px;
@@ -154,7 +154,7 @@
         .node-title {
             font-size: 1.1rem;
             font-style: italic;
-            color: #8a7c6b;
+            color: #413c3798;
             margin-bottom: 2px;
         }
         .node-desc {
@@ -192,12 +192,6 @@
         .window-header.alt { background-color: var(--light-blue); }
         .window-header.error { background-color: var(--red-alert); color: #fff; }
 
-        .window-header button {
-            background: none; border: 1px solid #111; 
-            width: 14px; height: 14px; line-height: 10px;
-            cursor: pointer; font-size: 10px; padding:0;
-            color: inherit;
-        }
         .window-body {
             padding: 15px;
             display: flex;
@@ -272,16 +266,16 @@
         }
 
         /* --- Layout: Music View --- */
-        #node-zamagetsi { top: 20%; left: 20%; }
-        #node-lamenting { top: 25%; left: 52%; }
-        #node-funzel    { top: 65%; left: 22%; }
-        #node-rain      { top: 70%; left: 50%; }
-        #window-who     { top: 15%; left: 70%; z-index: 30; }
-        #tag-1          { top: 28%; left: 63%; transform: rotate(-3deg); }
-        #tag-2          { top: 32%; left: 62%; transform: rotate(2deg); }
+        #node-4         { top: 20%; left: 15%; }
+        #node-1         { top: 25%; left: 42%; }
+        #node-2         { top: 60%; left: 27%; }
+        #node-3         { top: 62%; left: 55%; }
+        #window-who     { top: 17%; left: 75%; z-index: 30; }
+        #tag-1          { top: 30%; left: 68%; transform: rotate(-2deg); }
+        #tag-2          { top: 34%; left: 67%; transform: rotate(2deg); }
 
         /* --- Layout: Transmission View --- */
-        #window-about   { top: 25%; left: 25%; z-index: 20; }
+        #window-about   { top: 35%; left: 25%; z-index: 20; }
         #node-rec-1     { top: 15%; left: 65%; transform: scale(0.9); }
         #node-rec-2     { top: 55%; left: 60%; transform: scale(0.95); }
         #tag-ig         { top: 75%; left: 30%; transform: rotate(-5deg); z-index: 25;}
@@ -289,7 +283,7 @@
         #tag-sc         { top: 72%; left: 45%; transform: rotate(-1deg); z-index: 25;}
 
         /* --- Layout: Kits View --- */
-        #window-kits    { top: 35%; left: 40%; z-index: 30; }
+        #window-kits    { top: 35%; left: 45%; z-index: 30; }
 
         /* Image filters for moody aesthetic */
         .sepia-filter { filter: sepia(0.8) contrast(1.1) brightness(0.8) opacity(0.9); }
@@ -322,55 +316,54 @@
     <!-- ============================================== -->
     <div id="view-music" class="view active">
         <!-- Node: Zamagetsi -->
-        <div class="node" id="node-zamagetsi" data-link="https://bandcamp.com" title="Click to listen">
-            <div class="blob-mask shape-1" style="background-image: url('https://f4.bcbits.com/img/a4049055726_10.jpg?q=80&w=400&auto=format&fit=crop'); filter: sepia(0.3) saturate(1.5);"></div>
+        <div class="node" id="node-1" data-link="https://musicof01.bandcamp.com/album/zamagetsi" title="Click to listen">
+            <div class="blob-mask shape-1" style="background-image: url('https://f4.bcbits.com/img/a4049055726_10.jpg?q=80&w=400&auto=format&fit=crop');"></div>
             <div class="node-info">
                 <div class="node-title">Zamagetsi</div>
-                <div class="node-desc">2026 · 12 fractured movements</div>
+                <div class="node-desc">April 2026 · Album</div>
             </div>
         </div>
 
         <!-- Node: Funzel -->
-        <div class="node" id="node-funzel" data-link="https://bandcamp.com" title="Click to listen">
+        <div class="node" id="node-2" data-link="https://musicof01.bandcamp.com/track/funzel" title="Click to listen">
             <div class="blob-mask shape-2 dark-filter" style="background-image: url('https://f4.bcbits.com/img/a0157294812_10.jpg?q=80&w=400&auto=format&fit=crop');"></div>
             <div class="node-info">
                 <div class="node-title">Funzel</div>
-                <div class="node-desc">2023 · ambient drown tape</div>
+                <div class="node-desc">November 2025 · Single</div>
             </div>
         </div>
 
         <!-- Node: Lamenting -->
-        <div class="node" id="node-lamenting" data-link="https://bandcamp.com" title="Click to listen">
+        <div class="node" id="node-3" data-link="https://musicof01.bandcamp.com/track/lamenting" title="Click to listen">
             <div class="blob-mask shape-4 sepia-filter" style="background-image: url('https://f4.bcbits.com/img/a1403167335_10.jpg?q=80&w=400&auto=format&fit=crop');"></div>
             <div class="node-info">
                 <div class="node-title">Lamenting</div>
-                <div class="node-desc">2024 · single / 4:41</div>
+                <div class="node-desc">March 2026 · Single</div>
             </div>
         </div>
 
         <!-- Node: Rain -->
-        <div class="node" id="node-rain" data-link="https://bandcamp.com" title="Click to listen">
-            <div class="blob-mask shape-1 sepia-filter" style="background-image: url('https://f4.bcbits.com/img/a3860398966_10.jpg?q=80&w=400&auto=format&fit=crop'); transform: scale(0.9);"></div>
+        <div class="node" id="node-4" data-link="https://musicof01.bandcamp.com/track/rain" title="Click to listen">
+            <div class="blob-mask shape-1 sepia-filter" style="background-image: url('https://f4.bcbits.com/img/a1113774934_10.jpg?q=80&w=400&auto=format&fit=crop');"></div>
             <div class="node-info">
-                <div class="node-title">Rain</div>
-                <div class="node-desc">2023 · the wet one</div>
+                <div class="node-title">Wonder</div>
+                <div class="node-desc">January 2026 · Beat Collection/Album</div>
             </div>
         </div>
 
         <!-- Floating Tags -->
-        <div class="node tag" id="tag-1" data-link="https://instagram.com" title="Instagram">@musicof01</div>
-        <div class="node tag" id="tag-2" data-link="https://twitter.com" title="Twitter">@themusicof01</div>
+        <div class="node tag" id="tag-1" data-link="https://instagram.com/musicof01" title="Instagram">@musicof01</div>
+        <div class="node tag" id="tag-2" data-link="https://www.tiktok.com/@themusicof01" title="Twitter">@themusicof01</div>
 
         <!-- OS Window Node -->
         <div class="node os-window" id="window-who">
             <div class="window-header">
-                <span>WHO.TXT</span>
-                <button>x</button>
+                <span>WHOIS</span>
             </div>
             <div class="window-body">
                 <img class="window-img" src="https://f4.bcbits.com/img/0043370439_20.jpg?q=80&w=400&auto=format&fit=crop" alt="trippy mind">
                 <div class="window-number">01</div>
-                <button class="action-btn">following ♡</button>
+                <button class="action-btn">send love ♡</button>
             </div>
         </div>
     </div>
@@ -383,15 +376,14 @@
         <!-- About Me Window -->
         <div class="node os-window wide" id="window-about">
             <div class="window-header alt">
-                <span>TRANSMISSION_LOG.SYS</span>
-                <button>_</button>
+                <span>ABOUT ME</span>
             </div>
             <div class="window-body text-left">
                 <div class="typewriter-text">
-                    <p>Subject <span class="highlight">01</span> initialized.</p>
-                    <p>Broadcasting from the void between analog degradation and digital clarity. I create soundscapes for abandoned futures and forgotten pasts.</p>
-                    <p>Current configuration: <span class="accent">hardware synthesis, modified tape, algorithmic decay.</span></p>
-                    <p>Transmission origin unknown. Signal repeating.</p>
+                    <p>About <span class="highlight">01</span>.</p>
+                    <p>Avid producer, artist, and sound designer.</p>
+                    <p>Current projects/goals: <span class="accent">placements, a custom kit (coming soon), more collaborations.</span></p>
+                    <p>Contact information below.</p>
                 </div>
             </div>
         </div>
@@ -415,9 +407,9 @@
         </div>
 
         <!-- Social Links (Draggable but also clickable) -->
-        <div class="node tag" id="tag-ig" data-link="https://instagram.com">↗ instagram</div>
-        <div class="node tag" id="tag-bc" data-link="https://bandcamp.com">↗ bandcamp</div>
-        <div class="node tag" id="tag-sc" data-link="https://soundcloud.com">↗ soundcloud</div>
+        <div class="node tag" id="tag-ig" data-link="https://instagram.com/@musicof01">↗ instagram</div>
+        <div class="node tag" id="tag-bc" data-link="https://musicof01.bandcamp.com">↗ bandcamp</div>
+        <div class="node tag" id="tag-sc" data-link="mailto:mailfor.musicof01@gmail.com">↗ email</div>
     </div>
 
     <!-- ============================================== -->
@@ -427,18 +419,14 @@
         <!-- Kits Window -->
         <div class="node os-window" id="window-kits">
             <div class="window-header error">
-                <span>KITS_DB.EXE</span>
-                <button>x</button>
+                <span>KITS</span>
             </div>
             <div class="window-body text-left">
                 <div class="typewriter-text" style="color: #a89f91;">
-                    <p>> scanning root dir...</p>
-                    <p>> 0 files found.</p>
+                    <p style="color: var(--red-alert);">I am a lazy bum.</p>
+                    <p style="font-weight: bold; color: #fff;">KITS COMING SOON</p>
                     <br>
-                    <p style="color: var(--red-alert);">ERROR 404:</p>
-                    <p style="font-weight: bold; color: #fff;">MODULES_COMING_SOON</p>
-                    <br>
-                    <p>> awaiting future cycle for drum breaks & textures.</p>
+                    <p>Contact me if you would like to contribute.</p>
                 </div>
             </div>
         </div>
