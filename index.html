@@ -144,32 +144,6 @@
             text-transform: lowercase;
         }
 
-        /* --- Center PLAY Button --- */
-        .play-node .blob-mask {
-            background: var(--green);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            border-radius: 45% 55% 50% 50% / 50% 50% 50% 50%;
-            /* 3D gel effect */
-            box-shadow: 
-                inset -8px -8px 20px rgba(0,0,0,0.2), 
-                inset 8px 8px 20px rgba(255,255,255,0.4), 
-                10px 15px 25px rgba(0,0,0,0.3);
-            border: 1px solid rgba(0,0,0,0.1);
-        }
-        .play-text {
-            font-family: 'Courier Prime', monospace;
-            font-size: 3rem;
-            font-weight: bold;
-            color: var(--green);
-            /* Emboss text effect */
-            text-shadow: 
-                -1px -1px 1px rgba(255,255,255,0.7), 
-                2px 2px 3px rgba(0,0,0,0.3);
-            pointer-events: none;
-        }
-
         /* --- OS Window (WHO.TXT) --- */
         .os-window {
             background-color: #3f3d38;
@@ -291,17 +265,6 @@
         <div class="node-info">
             <div class="node-title">Funzel</div>
             <div class="node-desc">2023 · ambient drown tape</div>
-        </div>
-    </div>
-
-    <!-- Node: CENTER PLAY / Wonder -->
-    <div class="node play-node" id="node-play">
-        <div class="blob-mask shape-3">
-            <span class="play-text">PLAY</span>
-        </div>
-        <div class="node-info">
-            <div class="node-title" style="color: #fff; text-shadow: 1px 1px 2px rgba(0,0,0,0.3); opacity: 0.8;">Wonder</div>
-            <div class="node-desc" style="color: #d17541;">2028 · next experiments // unreleased</div>
         </div>
     </div>
 
